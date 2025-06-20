@@ -2,18 +2,17 @@ package com.corporativo.livraria.Entities;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "venda")
 public class VendaEntity {
 
@@ -25,7 +24,7 @@ public class VendaEntity {
     private LocalDate data;
 
     
-    @Column(name = "nome_cliente", length = 100)
+    @Column(name = "nome_cliente", length = 128)
     private String nome_cliente;
 
     @Column(name = "cpf_cliente",length = 14)
