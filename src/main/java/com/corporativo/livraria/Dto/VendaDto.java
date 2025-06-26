@@ -1,25 +1,13 @@
-package com.corporativo.livraria.Entities;
+package com.corporativo.livraria.Dto;
 
-import jakarta.persistence.*;
-import java.time.LocalDate;
 import java.util.List;
 
-@Entity
-@Table(name = "vendas")
-public class VendaEntity {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class VendaDto {
     private Long id;
-
-    private LocalDate data;
-
+    private String data;
     private String nomeCliente;
-
     private String cpfCliente;
-
-    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemVendaEntity> itens;
+    private List<ItemVendaDto> itens; 
 
     public Long getId() {
         return id;
@@ -29,11 +17,11 @@ public class VendaEntity {
         this.id = id;
     }
 
-    public LocalDate getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(LocalDate data) {
+    public void setData(String data) {
         this.data = data;
     }
 
@@ -53,11 +41,11 @@ public class VendaEntity {
         this.cpfCliente = cpfCliente;
     }
 
-    public List<ItemVendaEntity> getItens() {
+    public List<ItemVendaDto> getItens() {
         return itens;
     }
 
-    public void setItens(List<ItemVendaEntity> itens) {
+    public void setItens(List<ItemVendaDto> itens) {
         this.itens = itens;
     }
 }
