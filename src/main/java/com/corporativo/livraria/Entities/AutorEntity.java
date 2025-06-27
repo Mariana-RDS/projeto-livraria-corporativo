@@ -27,3 +27,10 @@ public class AutorEntity {
     @ManyToMany(mappedBy = "autores")
     private Set<LivroEntity> livros = new HashSet<>();
 }
+
+//colocar na pasta service o que for de modelo
+//alterar Dto para DTO
+//Renomear Entidade, nome simples
+//olhar para livro service, ajustar uso mapping
+//ajustar try catch no livro service
+//ajustar cascade do delete
