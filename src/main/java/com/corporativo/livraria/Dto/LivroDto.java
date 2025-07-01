@@ -2,8 +2,6 @@ package com.corporativo.livraria.Dto;
 
 import java.util.Set;
 
-import org.springframework.stereotype.Component;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

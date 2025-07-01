@@ -53,7 +53,7 @@ public class LivroService {
                     }))
                 .collect(Collectors.toSet());
 
-            LivroEntity livro = new LivroEntity();
+            LivroEntity livro = livroMapper.toEntity(dto);
             livro.setTitulo(dto.getTitulo());
             livro.setIsbn(dto.getIsbn());
             livro.setEditora(editora);
@@ -98,57 +98,68 @@ public class LivroService {
 
     @Transactional
     public boolean delete(Long id) {
-        LivroEntity livro = livroRepository.findById(id).orElse(null);
-        if (livro != null) {
-            estoqueRepository.deleteByLivroId(id);
-            livroRepository.deleteById(id);
-            return true;
+        try{
+            LivroEntity livro = livroRepository.findById(id).orElse(null);
+                if (livro != null) {
+                    estoqueRepository.deleteByLivroId(id);
+                    livroRepository.deleteById(id);
+                    return true;
+                }
+                return false;
+        }catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Please Try Again");
         }
-        return false;
+        
     }
 
     public LivroDto update(Long id, LivroDto dto) {
-        LivroEntity livro = livroRepository.findById(id).orElse(null);
-        if (livro == null) {
-            return null;
+        try{
+            LivroEntity livro = livroRepository.findById(id).orElse(null);
+                if (livro == null) {
+                    return null;
+            }
+
+            livro.setTitulo(dto.getTitulo());
+            livro.setIsbn(dto.getIsbn());
+
+            EditoraEntity editora = editoraRepository.findByNomeEditora(dto.getNomeEditora()).orElse(null);
+            if (editora == null) {
+                EditoraEntity novaEditora = new EditoraEntity();
+                novaEditora.setNomeEditora(dto.getNomeEditora());
+                editora = editoraRepository.save(novaEditora);
+            }
+            livro.setEditora(editora);
+
+            Set<AutorEntity> autores = dto.getNomesAutores().stream()
+                .map(nome -> {
+                    AutorEntity autor = autorRepository.findByNomeAutor(nome).orElse(null);
+                    if (autor == null) {
+                        AutorEntity novoAutor = new AutorEntity();
+                        novoAutor.setNomeAutor(nome);
+                        autor = autorRepository.save(novoAutor);
+                    }
+                    return autor;
+                })
+                .collect(Collectors.toSet());
+
+            livro.setAutores(autores);
+
+            LivroEntity livroAtualizado = livroRepository.save(livro);
+
+            EstoqueEntity estoque = estoqueRepository.findByLivroId(livroAtualizado.getId());
+            if (estoque != null) {
+                estoque.setQuantidade(dto.getQuantidadeEstoque() != null ? dto.getQuantidadeEstoque() : 0);
+                estoqueRepository.save(estoque);
+            }
+
+            LivroDto retorno = livroMapper.toDto(livroAtualizado);
+            retorno.setQuantidadeEstoque(estoque != null ? estoque.getQuantidade() : 0);
+
+            return retorno;
+
+        }catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Please Try Again");
         }
-
-        livro.setTitulo(dto.getTitulo());
-        livro.setIsbn(dto.getIsbn());
-
-        EditoraEntity editora = editoraRepository.findByNomeEditora(dto.getNomeEditora()).orElse(null);
-        if (editora == null) {
-            EditoraEntity novaEditora = new EditoraEntity();
-            novaEditora.setNomeEditora(dto.getNomeEditora());
-            editora = editoraRepository.save(novaEditora);
-        }
-        livro.setEditora(editora);
-
-        Set<AutorEntity> autores = dto.getNomesAutores().stream()
-            .map(nome -> {
-                AutorEntity autor = autorRepository.findByNomeAutor(nome).orElse(null);
-                if (autor == null) {
-                    AutorEntity novoAutor = new AutorEntity();
-                    novoAutor.setNomeAutor(nome);
-                    autor = autorRepository.save(novoAutor);
-                }
-                return autor;
-            })
-            .collect(Collectors.toSet());
-
-        livro.setAutores(autores);
-
-        LivroEntity livroAtualizado = livroRepository.save(livro);
-
-        EstoqueEntity estoque = estoqueRepository.findByLivroId(livroAtualizado.getId());
-        if (estoque != null) {
-            estoque.setQuantidade(dto.getQuantidadeEstoque() != null ? dto.getQuantidadeEstoque() : 0);
-            estoqueRepository.save(estoque);
-        }
-
-        LivroDto retorno = livroMapper.toDto(livroAtualizado);
-        retorno.setQuantidadeEstoque(estoque != null ? estoque.getQuantidade() : 0);
-
-        return retorno;
     }
+        
 }
