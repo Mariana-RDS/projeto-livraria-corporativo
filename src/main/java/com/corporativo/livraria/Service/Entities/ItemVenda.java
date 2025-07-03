@@ -1,4 +1,4 @@
-package com.corporativo.livraria.Entities;
+package com.corporativo.livraria.Service.Entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "item_venda")
-public class ItemVendaEntity {
+public class ItemVenda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class ItemVendaEntity {
 
     @ManyToOne
     @JoinColumn(name = "livro_id")
-    private LivroEntity livro;
+    private Livro livro;
 
     @Column(name = "quantidade")
     private Integer quantidade;
@@ -32,5 +32,5 @@ public class ItemVendaEntity {
 
     @ManyToOne
     @JoinColumn(name = "venda_id")
-    private VendaEntity venda;
+    private Venda venda;
 }

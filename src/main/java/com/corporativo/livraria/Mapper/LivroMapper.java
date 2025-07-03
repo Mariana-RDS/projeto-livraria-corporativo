@@ -6,29 +6,29 @@ import java.util.stream.Collectors;
 
 import org.mapstruct.*;
 
-import com.corporativo.livraria.Dto.LivroDto;
-import com.corporativo.livraria.Entities.AutorEntity;
-import com.corporativo.livraria.Entities.LivroEntity;
+import com.corporativo.livraria.Service.DTO.LivroDTO;
+import com.corporativo.livraria.Service.Entities.Autor;
+import com.corporativo.livraria.Service.Entities.Livro;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface LivroMapper {
 
     @Mapping(target = "nomeEditora", source = "editora.nomeEditora")
-    @Mapping(target = "nomesAutores", expression = "java(mapAutoresToNomes(livroEntity.getAutores()))")
-    LivroDto toDto(LivroEntity livroEntity);
+    @Mapping(target = "nomesAutores", expression = "java(mapAutoresToNomes(livro.getAutores()))")
+    LivroDTO toDto(Livro livro);
 
-    List<LivroDto> toDtoList(List<LivroEntity> livroEntities);
+    List<LivroDTO> toDtoList(List<Livro> livro);
 
-    LivroEntity toEntity(LivroDto livroDto);
+    Livro toEntity(LivroDTO livroDto);
 
-    List<LivroEntity> toEntityList(List<LivroDto> livroDtos);
+    List<Livro> toEntityList(List<LivroDTO> livroDtos);
 
-    default Set<String> mapAutoresToNomes(Set<AutorEntity> autores) {
+    default Set<String> mapAutoresToNomes(Set<Autor> autores) {
         if (autores == null) {
             return null;
         }
         return autores.stream()
-            .map(AutorEntity::getNomeAutor)
+            .map(Autor::getNomeAutor)
             .collect(Collectors.toSet());
     }
 }

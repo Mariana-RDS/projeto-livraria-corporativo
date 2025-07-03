@@ -1,7 +1,8 @@
 package com.corporativo.livraria.Controllers;
 
-import com.corporativo.livraria.Dto.VendaDto;
 import com.corporativo.livraria.Service.VendaService;
+import com.corporativo.livraria.Service.DTO.VendaDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class VendaController {
     private VendaService vendaService;
 
     @PostMapping
-    public ResponseEntity<VendaDto> create(@RequestBody VendaDto dto) {
+    public ResponseEntity<VendaDTO> create(@RequestBody VendaDTO dto) {
         try{
             return ResponseEntity.ok(vendaService.create(dto));
         }catch(Exception e){
@@ -27,9 +28,9 @@ public class VendaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<VendaDto>> getAll() {
+    public ResponseEntity<List<VendaDTO>> getAll() {
         try{
-            List<VendaDto> vendas = vendaService.getAll();
+            List<VendaDTO> vendas = vendaService.getAll();
             if (vendas.isEmpty()) return ResponseEntity.noContent().build();
             return ResponseEntity.ok(vendas);
         }catch(Exception e){
@@ -39,7 +40,7 @@ public class VendaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VendaDto> getById(@PathVariable Long id) {
+    public ResponseEntity<VendaDTO> getById(@PathVariable Long id) {
         try{
             return vendaService.getById(id)
             .map(ResponseEntity::ok)
@@ -51,9 +52,9 @@ public class VendaController {
     }
 
     @GetMapping("/cpf/{cpf}")
-    public ResponseEntity<List<VendaDto>> getByCpf(@PathVariable String cpf) {
+    public ResponseEntity<List<VendaDTO>> getByCpf(@PathVariable String cpf) {
         try{
-            List<VendaDto> vendas = vendaService.getByCpf(cpf);
+            List<VendaDTO> vendas = vendaService.getByCpf(cpf);
             if (vendas.isEmpty()) return ResponseEntity.noContent().build();
             return ResponseEntity.ok(vendas);
         }catch(Exception e){

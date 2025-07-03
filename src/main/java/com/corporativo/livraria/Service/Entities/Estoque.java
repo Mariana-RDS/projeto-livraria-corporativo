@@ -1,4 +1,4 @@
-package com.corporativo.livraria.Entities;
+package com.corporativo.livraria.Service.Entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,14 +12,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "estoque")
-public class EstoqueEntity {
+public class Estoque {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne
-    private LivroEntity livro;
+    private Livro livro;
 
     @Column(name = "quantidade", nullable = false)
     private Integer quantidade;

@@ -1,13 +1,13 @@
-package com.corporativo.livraria.Dto;
+package com.corporativo.livraria.Service.DTO;
 
 import java.util.List;
 
-public class VendaDto {
+public class VendaDTO {
     private Long id;
     private String data;
     private String nomeCliente;
     private String cpfCliente;
-    private List<ItemVendaDto> itens; 
+    private List<ItemVendaDTO> itens; 
 
     public Long getId() {
         return id;
@@ -41,11 +41,11 @@ public class VendaDto {
         this.cpfCliente = cpfCliente;
     }
 
-    public List<ItemVendaDto> getItens() {
+    public List<ItemVendaDTO> getItens() {
         return itens;
     }
 
-    public void setItens(List<ItemVendaDto> itens) {
+    public void setItens(List<ItemVendaDTO> itens) {
         this.itens = itens;
     }
 }

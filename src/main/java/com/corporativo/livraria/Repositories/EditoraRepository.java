@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.corporativo.livraria.Entities.EditoraEntity;
+import com.corporativo.livraria.Service.Entities.Editora;
 
-public interface EditoraRepository extends JpaRepository<EditoraEntity, Long>{
-    Optional<EditoraEntity> findByNomeEditora(String nomeEditora);
+public interface EditoraRepository extends JpaRepository<Editora, Long>{
+    Optional<Editora> findByNomeEditora(String nomeEditora);
 
 }

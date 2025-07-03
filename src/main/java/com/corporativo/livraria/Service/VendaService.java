@@ -1,13 +1,14 @@
 package com.corporativo.livraria.Service;
 
-import com.corporativo.livraria.Dto.ItemVendaDto;
-import com.corporativo.livraria.Dto.VendaDto;
-import com.corporativo.livraria.Entities.ItemVendaEntity;
-import com.corporativo.livraria.Entities.LivroEntity;
-import com.corporativo.livraria.Entities.VendaEntity;
 import com.corporativo.livraria.Repositories.ItemVendaRepository;
 import com.corporativo.livraria.Repositories.LivroRepository;
 import com.corporativo.livraria.Repositories.VendaRepository;
+import com.corporativo.livraria.Service.DTO.ItemVendaDTO;
+import com.corporativo.livraria.Service.DTO.VendaDTO;
+import com.corporativo.livraria.Service.Entities.ItemVenda;
+import com.corporativo.livraria.Service.Entities.Livro;
+import com.corporativo.livraria.Service.Entities.Venda;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,22 +32,22 @@ public class VendaService {
     @Autowired
     private ItemVendaRepository itemVendaRepository;
 
-    public VendaDto create(VendaDto dto) {
+    public VendaDTO create(VendaDTO dto) {
         try{
-            VendaEntity venda = new VendaEntity();
+            Venda venda = new Venda();
 
             venda.setData(dto.getData() != null ? LocalDate.parse(dto.getData()) : null);
             venda.setNomeCliente(dto.getNomeCliente());
             venda.setCpfCliente(dto.getCpfCliente());
 
-            VendaEntity vendaSalva = vendaRepository.save(venda);
+            Venda vendaSalva = vendaRepository.save(venda);
 
-            List<ItemVendaDto> itensDto = dto.getItens() != null ? dto.getItens() : Collections.emptyList();
+            List<ItemVendaDTO> itensDto = dto.getItens() != null ? dto.getItens() : Collections.emptyList();
 
-            List<ItemVendaEntity> itens = itensDto.stream().map(itemDto -> {
-                LivroEntity livro = livroRepository.findById(itemDto.getLivroId())
+            List<ItemVenda> itens = itensDto.stream().map(itemDto -> {
+                Livro livro = livroRepository.findById(itemDto.getLivroId())
                     .orElseThrow(() -> new RuntimeException("Livro não encontrado com id: " + itemDto.getLivroId()));
-                ItemVendaEntity item = new ItemVendaEntity();
+                ItemVenda item = new ItemVenda();
                 item.setLivro(livro);
                 item.setQuantidade(itemDto.getQuantidade());
                 item.setVenda(vendaSalva);
@@ -64,7 +65,7 @@ public class VendaService {
         
     }
 
-    public List<VendaDto> getAll() {
+    public List<VendaDTO> getAll() {
         try{
             return vendaRepository.findAll().stream()
                 .map(this::toDto)
@@ -76,7 +77,7 @@ public class VendaService {
         
     }
 
-    public Optional<VendaDto> getById(Long id) {
+    public Optional<VendaDTO> getById(Long id) {
         try{
             return vendaRepository.findById(id).map(this::toDto);
 
@@ -86,7 +87,7 @@ public class VendaService {
         
     }
 
-    public List<VendaDto> getByCpf(String cpf) {
+    public List<VendaDTO> getByCpf(String cpf) {
         try{
             return vendaRepository.findByCpfCliente(cpf).stream()
                 .map(this::toDto)
@@ -108,9 +109,9 @@ public class VendaService {
         
     }
 
-    private VendaDto toDto(VendaEntity venda) {
+    private VendaDTO toDto(Venda venda) {
         try{
-            VendaDto dto = new VendaDto();
+            VendaDTO dto = new VendaDTO();
             dto.setId(venda.getId());
 
             dto.setData(venda.getData() != null ? venda.getData().toString() : null);
@@ -118,9 +119,9 @@ public class VendaService {
             dto.setCpfCliente(venda.getCpfCliente());
 
             if (venda.getItens() != null) {
-                List<ItemVendaDto> itensDto = venda.getItens().stream()
+                List<ItemVendaDTO> itensDto = venda.getItens().stream()
                     .map(item -> {
-                        ItemVendaDto itemDto = new ItemVendaDto();
+                        ItemVendaDTO itemDto = new ItemVendaDTO();
                         itemDto.setId(item.getId());
                         itemDto.setLivroId(item.getLivro().getId());
                         itemDto.setQuantidade(item.getQuantidade());

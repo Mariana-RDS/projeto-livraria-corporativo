@@ -1,4 +1,4 @@
-package com.corporativo.livraria.Dto;
+package com.corporativo.livraria.Service.DTO;
 
 import java.util.Set;
 
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LivroDto {
+public class LivroDTO {
     private Long id;
     private String titulo;
     private String isbn;

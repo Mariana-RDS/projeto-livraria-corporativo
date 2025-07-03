@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.corporativo.livraria.Entities.AutorEntity;
+import com.corporativo.livraria.Service.Entities.Autor;
 
-public interface AutorRepository extends JpaRepository<AutorEntity, Long>{
-    Optional<AutorEntity> findByNomeAutor(String nomeAutor);
+public interface AutorRepository extends JpaRepository<Autor, Long>{
+    Optional<Autor> findByNomeAutor(String nomeAutor);
 
 }
