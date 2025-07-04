@@ -1,4 +1,4 @@
-package com.corporativo.livraria.Entities;
+package com.corporativo.livraria.Service.Entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "vendas")
-public class VendaEntity {
+public class Venda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class VendaEntity {
     private String cpfCliente;
 
     @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemVendaEntity> itens;
+    private List<ItemVenda> itens;
 
     public Long getId() {
         return id;
@@ -53,11 +53,11 @@ public class VendaEntity {
         this.cpfCliente = cpfCliente;
     }
 
-    public List<ItemVendaEntity> getItens() {
+    public List<ItemVenda> getItens() {
         return itens;
     }
 
-    public void setItens(List<ItemVendaEntity> itens) {
+    public void setItens(List<ItemVenda> itens) {
         this.itens = itens;
     }
 }

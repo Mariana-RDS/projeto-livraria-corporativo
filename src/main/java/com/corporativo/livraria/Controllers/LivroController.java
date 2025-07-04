@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import com.corporativo.livraria.Dto.LivroDto;
 import com.corporativo.livraria.Service.LivroService;
+import com.corporativo.livraria.Service.DTO.LivroDTO;
 
 @Controller
 @RequestMapping("/api")
@@ -19,9 +19,9 @@ public class LivroController {
     private LivroService livroService;
 
     @PostMapping("/livros/create")
-    public ResponseEntity<LivroDto> createLivro(@RequestBody LivroDto livroDto){
+    public ResponseEntity<LivroDTO> createLivro(@RequestBody LivroDTO livroDto){
         try {
-            LivroDto dto = livroService.create(livroDto);
+            LivroDTO dto = livroService.create(livroDto);
             if (dto == null) {
                 return new ResponseEntity<>(HttpStatus.CONFLICT);
             }
@@ -32,9 +32,9 @@ public class LivroController {
     }
 
     @GetMapping("/livros")
-    public ResponseEntity<Set<LivroDto>> getAllLivros(){
+    public ResponseEntity<Set<LivroDTO>> getAllLivros(){
         try {
-            Set<LivroDto> dtos = livroService.getAll();
+            Set<LivroDTO> dtos = livroService.getAll();
             if(dtos == null || dtos.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
@@ -55,8 +55,8 @@ public class LivroController {
     }
 
     @PutMapping("/livros/{id}")
-    public ResponseEntity<LivroDto> updateLivro(@PathVariable Long id, @RequestBody LivroDto livroDto) {
-        LivroDto updatedLivro = livroService.update(id, livroDto);
+    public ResponseEntity<LivroDTO> updateLivro(@PathVariable Long id, @RequestBody LivroDTO livroDto) {
+        LivroDTO updatedLivro = livroService.update(id, livroDto);
         if (updatedLivro == null) {
             return ResponseEntity.notFound().build();
         }

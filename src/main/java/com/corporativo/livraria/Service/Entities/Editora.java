@@ -1,4 +1,4 @@
-package com.corporativo.livraria.Entities;
+package com.corporativo.livraria.Service.Entities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "editora")
-public class EditoraEntity {
+public class Editora {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class EditoraEntity {
     private String nomeEditora;
 
     @OneToMany(mappedBy = "editora")
-    private List<LivroEntity> livros = new ArrayList<>();
+    private List<Livro> livros = new ArrayList<>();
 
     
 }

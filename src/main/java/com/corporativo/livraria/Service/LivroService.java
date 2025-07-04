@@ -10,16 +10,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.corporativo.livraria.Dto.LivroDto;
-import com.corporativo.livraria.Entities.AutorEntity;
-import com.corporativo.livraria.Entities.EditoraEntity;
-import com.corporativo.livraria.Entities.EstoqueEntity;
-import com.corporativo.livraria.Entities.LivroEntity;
 import com.corporativo.livraria.Mapper.LivroMapper;
 import com.corporativo.livraria.Repositories.AutorRepository;
 import com.corporativo.livraria.Repositories.EditoraRepository;
 import com.corporativo.livraria.Repositories.EstoqueRepository;
 import com.corporativo.livraria.Repositories.LivroRepository;
+import com.corporativo.livraria.Service.DTO.LivroDTO;
+import com.corporativo.livraria.Service.Entities.Autor;
+import com.corporativo.livraria.Service.Entities.Editora;
+import com.corporativo.livraria.Service.Entities.Estoque;
+import com.corporativo.livraria.Service.Entities.Livro;
 
 @Service
 public class LivroService {
@@ -35,38 +35,38 @@ public class LivroService {
     @Autowired
     private LivroMapper livroMapper;
 
-    public LivroDto create(LivroDto dto) {
+    public LivroDTO create(LivroDTO dto) {
         try {
-            EditoraEntity editora = editoraRepository.findByNomeEditora(dto.getNomeEditora())
+            Editora editora = editoraRepository.findByNomeEditora(dto.getNomeEditora())
                 .orElseGet(() -> {
-                    EditoraEntity novaEditora = new EditoraEntity();
+                    Editora novaEditora = new Editora();
                     novaEditora.setNomeEditora(dto.getNomeEditora());
                     return editoraRepository.save(novaEditora);
                 });
 
-            Set<AutorEntity> autores = dto.getNomesAutores().stream()
+            Set<Autor> autores = dto.getNomesAutores().stream()
                 .map(nome -> autorRepository.findByNomeAutor(nome)
                     .orElseGet(() -> {
-                        AutorEntity novoAutor = new AutorEntity();
+                        Autor novoAutor = new Autor();
                         novoAutor.setNomeAutor(nome);
                         return autorRepository.save(novoAutor);
                     }))
                 .collect(Collectors.toSet());
 
-            LivroEntity livro = livroMapper.toEntity(dto);
+            Livro livro = livroMapper.toEntity(dto);
             livro.setTitulo(dto.getTitulo());
             livro.setIsbn(dto.getIsbn());
             livro.setEditora(editora);
             livro.setAutores(autores);
 
-            LivroEntity livroSalvo = livroRepository.save(livro);
+            Livro livroSalvo = livroRepository.save(livro);
 
-            EstoqueEntity estoque = new EstoqueEntity();
+            Estoque estoque = new Estoque();
             estoque.setLivro(livroSalvo);
             estoque.setQuantidade(dto.getQuantidadeEstoque() != null ? dto.getQuantidadeEstoque() : 0);
             estoqueRepository.save(estoque);
 
-            LivroDto retorno = livroMapper.toDto(livroSalvo);
+            LivroDTO retorno = livroMapper.toDto(livroSalvo);
             retorno.setQuantidadeEstoque(estoque.getQuantidade());
 
             return retorno;
@@ -76,14 +76,14 @@ public class LivroService {
         }
     }
 
-    public Set<LivroDto> getAll() {
+    public Set<LivroDTO> getAll() {
         try {
-            List<LivroEntity> livros = livroRepository.findAll();
+            List<Livro> livros = livroRepository.findAll();
 
-            Set<LivroDto> livroDtos = livros.stream()
+            Set<LivroDTO> livroDtos = livros.stream()
                 .map(livro -> {
-                    LivroDto dto = livroMapper.toDto(livro);
-                    EstoqueEntity estoque = estoqueRepository.findByLivroId(livro.getId());
+                    LivroDTO dto = livroMapper.toDto(livro);
+                    Estoque estoque = estoqueRepository.findByLivroId(livro.getId());
                     dto.setQuantidadeEstoque(estoque != null ? estoque.getQuantidade() : 0);
                     return dto;
                 })
@@ -99,7 +99,7 @@ public class LivroService {
     @Transactional
     public boolean delete(Long id) {
         try{
-            LivroEntity livro = livroRepository.findById(id).orElse(null);
+            Livro livro = livroRepository.findById(id).orElse(null);
                 if (livro != null) {
                     estoqueRepository.deleteByLivroId(id);
                     livroRepository.deleteById(id);
@@ -112,9 +112,9 @@ public class LivroService {
         
     }
 
-    public LivroDto update(Long id, LivroDto dto) {
+    public LivroDTO update(Long id, LivroDTO dto) {
         try{
-            LivroEntity livro = livroRepository.findById(id).orElse(null);
+            Livro livro = livroRepository.findById(id).orElse(null);
                 if (livro == null) {
                     return null;
             }
@@ -122,19 +122,19 @@ public class LivroService {
             livro.setTitulo(dto.getTitulo());
             livro.setIsbn(dto.getIsbn());
 
-            EditoraEntity editora = editoraRepository.findByNomeEditora(dto.getNomeEditora()).orElse(null);
+            Editora editora = editoraRepository.findByNomeEditora(dto.getNomeEditora()).orElse(null);
             if (editora == null) {
-                EditoraEntity novaEditora = new EditoraEntity();
+                Editora novaEditora = new Editora();
                 novaEditora.setNomeEditora(dto.getNomeEditora());
                 editora = editoraRepository.save(novaEditora);
             }
             livro.setEditora(editora);
 
-            Set<AutorEntity> autores = dto.getNomesAutores().stream()
+            Set<Autor> autores = dto.getNomesAutores().stream()
                 .map(nome -> {
-                    AutorEntity autor = autorRepository.findByNomeAutor(nome).orElse(null);
+                    Autor autor = autorRepository.findByNomeAutor(nome).orElse(null);
                     if (autor == null) {
-                        AutorEntity novoAutor = new AutorEntity();
+                        Autor novoAutor = new Autor();
                         novoAutor.setNomeAutor(nome);
                         autor = autorRepository.save(novoAutor);
                     }
@@ -144,15 +144,15 @@ public class LivroService {
 
             livro.setAutores(autores);
 
-            LivroEntity livroAtualizado = livroRepository.save(livro);
+            Livro livroAtualizado = livroRepository.save(livro);
 
-            EstoqueEntity estoque = estoqueRepository.findByLivroId(livroAtualizado.getId());
+            Estoque estoque = estoqueRepository.findByLivroId(livroAtualizado.getId());
             if (estoque != null) {
                 estoque.setQuantidade(dto.getQuantidadeEstoque() != null ? dto.getQuantidadeEstoque() : 0);
                 estoqueRepository.save(estoque);
             }
 
-            LivroDto retorno = livroMapper.toDto(livroAtualizado);
+            LivroDTO retorno = livroMapper.toDto(livroAtualizado);
             retorno.setQuantidadeEstoque(estoque != null ? estoque.getQuantidade() : 0);
 
             return retorno;

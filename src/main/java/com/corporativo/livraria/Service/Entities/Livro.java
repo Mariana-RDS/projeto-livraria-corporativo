@@ -1,4 +1,4 @@
-package com.corporativo.livraria.Entities;
+package com.corporativo.livraria.Service.Entities;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "livro")
-public class LivroEntity {
+public class Livro {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class LivroEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_editora")
-    private EditoraEntity editora;
+    private Editora editora;
 
     @ManyToMany
     @JoinTable(
@@ -37,7 +37,7 @@ public class LivroEntity {
         joinColumns = @JoinColumn(name = "id_livro"),
         inverseJoinColumns = @JoinColumn(name = "id_autor")
     )
-    private Set<AutorEntity> autores = new HashSet<>();
+    private Set<Autor> autores = new HashSet<>();
     
 
 }
