@@ -35,11 +35,12 @@ public class Usuario implements UserDetails{
     @Column(unique = true, nullable = false)
     private String login;
 
+    
     @Column(nullable = false)
     private String password;
 
-    private String nome;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
 
@@ -52,7 +53,7 @@ public class Usuario implements UserDetails{
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-        else return List.of( new SimpleGrantedAuthority("ROLE_ADMIN"));
+        else return List.of( new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
