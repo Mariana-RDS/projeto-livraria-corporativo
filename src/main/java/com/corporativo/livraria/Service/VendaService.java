@@ -1,13 +1,17 @@
 package com.corporativo.livraria.Service;
 
+import com.corporativo.livraria.Repositories.EstoqueRepository;
 import com.corporativo.livraria.Repositories.ItemVendaRepository;
 import com.corporativo.livraria.Repositories.LivroRepository;
 import com.corporativo.livraria.Repositories.VendaRepository;
 import com.corporativo.livraria.Service.DTO.ItemVendaDTO;
 import com.corporativo.livraria.Service.DTO.VendaDTO;
+import com.corporativo.livraria.Service.Entities.Estoque;
 import com.corporativo.livraria.Service.Entities.ItemVenda;
 import com.corporativo.livraria.Service.Entities.Livro;
 import com.corporativo.livraria.Service.Entities.Venda;
+
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,8 +36,12 @@ public class VendaService {
     @Autowired
     private ItemVendaRepository itemVendaRepository;
 
-    public VendaDTO create(VendaDTO dto) {
-        try{
+    @Autowired
+    private EstoqueRepository estoqueRepository;
+
+    @Transactional
+    public VendaDTO registrarVenda(VendaDTO dto) {
+        try {
             Venda venda = new Venda();
 
             venda.setData(dto.getData() != null ? LocalDate.parse(dto.getData()) : null);
@@ -46,7 +54,21 @@ public class VendaService {
 
             List<ItemVenda> itens = itensDto.stream().map(itemDto -> {
                 Livro livro = livroRepository.findById(itemDto.getLivroId())
-                    .orElseThrow(() -> new RuntimeException("Livro não encontrado com id: " + itemDto.getLivroId()));
+                        .orElseThrow(
+                                () -> new RuntimeException("Livro não encontrado com id: " + itemDto.getLivroId()));
+
+                Estoque estoque = estoqueRepository.findByLivro(livro)
+                        .orElseThrow(
+                                () -> new RuntimeException(
+                                        "Estoque não encontrado para o livro: " + livro.getTitulo()));
+
+                if (estoque.getQuantidade() < itemDto.getQuantidade()) {
+                    throw new RuntimeException("Estoque insuficiente para o livro: " + livro.getTitulo());
+                }
+
+                estoque.setQuantidade(estoque.getQuantidade() - itemDto.getQuantidade());
+                estoqueRepository.save(estoque);
+
                 ItemVenda item = new ItemVenda();
                 item.setLivro(livro);
                 item.setQuantidade(itemDto.getQuantidade());
@@ -59,58 +81,61 @@ public class VendaService {
             dto.setId(vendaSalva.getId());
             return dto;
 
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Please Try Again");
         }
-        
+
     }
 
     public List<VendaDTO> getAll() {
-        try{
+        try {
             return vendaRepository.findAll().stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+                    .map(this::toDto)
+                    .collect(Collectors.toList());
 
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Please Try Again");
         }
-        
+
     }
 
     public Optional<VendaDTO> getById(Long id) {
-        try{
+        try {
             return vendaRepository.findById(id).map(this::toDto);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Please Try Again");
         }
-        
+
     }
 
     public List<VendaDTO> getByCpf(String cpf) {
-        try{
+        try {
             return vendaRepository.findByCpfCliente(cpf).stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+                    .map(this::toDto)
+                    .collect(Collectors.toList());
 
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Please Try Again");
         }
-        
+
     }
 
+    
+    // Será que deveria ter como apagar uma venda? acho perigoso, a policia federal vai vir atrás
+
     public void delete(Long id) {
-        try{
+        try {
             vendaRepository.deleteById(id);
 
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Please Try Again");
         }
-        
+
     }
 
     private VendaDTO toDto(Venda venda) {
-        try{
+        try {
             VendaDTO dto = new VendaDTO();
             dto.setId(venda.getId());
 
@@ -120,13 +145,13 @@ public class VendaService {
 
             if (venda.getItens() != null) {
                 List<ItemVendaDTO> itensDto = venda.getItens().stream()
-                    .map(item -> {
-                        ItemVendaDTO itemDto = new ItemVendaDTO();
-                        itemDto.setId(item.getId());
-                        itemDto.setLivroId(item.getLivro().getId());
-                        itemDto.setQuantidade(item.getQuantidade());
-                        return itemDto;
-                    }).collect(Collectors.toList());
+                        .map(item -> {
+                            ItemVendaDTO itemDto = new ItemVendaDTO();
+                            itemDto.setId(item.getId());
+                            itemDto.setLivroId(item.getLivro().getId());
+                            itemDto.setQuantidade(item.getQuantidade());
+                            return itemDto;
+                        }).collect(Collectors.toList());
                 dto.setItens(itensDto);
             } else {
                 dto.setItens(Collections.emptyList());
@@ -134,9 +159,9 @@ public class VendaService {
 
             return dto;
 
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Please Try Again");
         }
-        
+
     }
 }

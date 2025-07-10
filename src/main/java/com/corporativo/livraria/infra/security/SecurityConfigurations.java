@@ -30,6 +30,7 @@ public class SecurityConfigurations {
                     .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll() //Para teste, o certo é criar direto no bd e a partir dele criar outros usuarios
                     .requestMatchers(HttpMethod.POST, "/api/livros/create").hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.POST, "/api/vendas/venda").hasRole("ADMIN")
                     //.requestMatchers(HttpMethod.POST, "/api/livros/create").permitAll()
                     .anyRequest().authenticated()
             )

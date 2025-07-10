@@ -19,6 +19,7 @@ public class Estoque {
     private Long id;
 
     @OneToOne
+    @JoinColumn(name = "id_livro", referencedColumnName = "id", unique = true)
     private Livro livro;
 
     @Column(name = "quantidade", nullable = false)

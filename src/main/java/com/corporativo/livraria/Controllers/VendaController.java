@@ -17,17 +17,17 @@ public class VendaController {
     @Autowired
     private VendaService vendaService;
 
-    @PostMapping
+    @PostMapping("/venda")
     public ResponseEntity<VendaDTO> create(@RequestBody VendaDTO dto) {
         try{
-            return ResponseEntity.ok(vendaService.create(dto));
+            return ResponseEntity.ok(vendaService.registrarVenda(dto));
         }catch(Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         
     }
 
-    @GetMapping
+    @GetMapping("/buscar")
     public ResponseEntity<List<VendaDTO>> getAll() {
         try{
             List<VendaDTO> vendas = vendaService.getAll();
@@ -62,6 +62,7 @@ public class VendaController {
         }
         
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {

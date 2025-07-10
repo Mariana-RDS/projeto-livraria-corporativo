@@ -56,6 +56,7 @@ public class LivroService {
             Livro livro = livroMapper.toEntity(dto);
             livro.setTitulo(dto.getTitulo());
             livro.setIsbn(dto.getIsbn());
+            livro.setPreco(dto.getPreco());
             livro.setEditora(editora);
             livro.setAutores(autores);
 

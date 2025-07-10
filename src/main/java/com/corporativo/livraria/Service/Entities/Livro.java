@@ -2,6 +2,7 @@ package com.corporativo.livraria.Service.Entities;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.math.BigDecimal; 
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,9 @@ public class Livro {
 
     @Column(name = "isbn", nullable = false, length = 15)
     private String isbn;
+
+    @Column(name = "preco", precision = 10, scale = 2)
+    private BigDecimal preco;
 
     @ManyToOne
     @JoinColumn(name = "id_editora")
