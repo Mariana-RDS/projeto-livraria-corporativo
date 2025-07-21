@@ -73,6 +73,7 @@ public class VendaService {
                 item.setLivro(livro);
                 item.setQuantidade(itemDto.getQuantidade());
                 item.setVenda(vendaSalva);
+                item.setPrecoUnitario(livro.getPreco());
                 return item;
             }).collect(Collectors.toList());
 
@@ -82,6 +83,7 @@ public class VendaService {
             return dto;
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Please Try Again");
         }
 

@@ -12,10 +12,13 @@ public class Venda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "data")
     private LocalDate data;
 
+    @Column(name = "nomeCliente")
     private String nomeCliente;
 
+    @Column(name = "cpfCliente")
     private String cpfCliente;
 
     @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
