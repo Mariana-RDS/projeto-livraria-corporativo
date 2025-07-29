@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +40,62 @@ public class VendaService {
     @Autowired
     private EstoqueRepository estoqueRepository;
 
+    /*
+     * @Transactional
+     * public VendaDTO registrarVenda(VendaDTO dto) {
+     * try {
+     * Venda venda = new Venda();
+     * 
+     * venda.setData(dto.getData() != null ? LocalDate.parse(dto.getData()) : null);
+     * venda.setNomeCliente(dto.getNomeCliente());
+     * venda.setCpfCliente(dto.getCpfCliente());
+     * 
+     * Venda vendaSalva = vendaRepository.save(venda);
+     * 
+     * List<ItemVendaDTO> itensDto = dto.getItens() != null ? dto.getItens() :
+     * Collections.emptyList();
+     * 
+     * List<ItemVenda> itens = itensDto.stream().map(itemDto -> {
+     * Livro livro = livroRepository.findById(itemDto.getLivroId())
+     * .orElseThrow(
+     * () -> new RuntimeException("Livro não encontrado com id: " +
+     * itemDto.getLivroId()));
+     * 
+     * Estoque estoque = estoqueRepository.findByLivro(livro)
+     * .orElseThrow(
+     * () -> new RuntimeException(
+     * "Estoque não encontrado para o livro: " + livro.getTitulo()));
+     * 
+     * if (estoque.getQuantidade() < itemDto.getQuantidade()) {
+     * throw new RuntimeException("Estoque insuficiente para o livro: " +
+     * livro.getTitulo());
+     * }
+     * 
+     * estoque.setQuantidade(estoque.getQuantidade() - itemDto.getQuantidade());
+     * estoqueRepository.save(estoque);
+     * 
+     * ItemVenda item = new ItemVenda();
+     * item.setLivro(livro);
+     * item.setQuantidade(itemDto.getQuantidade());
+     * item.setVenda(vendaSalva);
+     * item.setPrecoUnitario(livro.getPreco());
+     * return item;
+     * }).collect(Collectors.toList());
+     * 
+     * itemVendaRepository.saveAll(itens);
+     * 
+     * dto.setId(vendaSalva.getId());
+     * return dto;
+     * 
+     * } catch (Exception e) {
+     * e.printStackTrace();
+     * throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+     * "Please Try Again");
+     * }
+     * 
+     * }
+     */
+
     @Transactional
     public VendaDTO registrarVenda(VendaDTO dto) {
         try {
@@ -48,8 +105,6 @@ public class VendaService {
             venda.setNomeCliente(dto.getNomeCliente());
             venda.setCpfCliente(dto.getCpfCliente());
 
-            Venda vendaSalva = vendaRepository.save(venda);
-
             List<ItemVendaDTO> itensDto = dto.getItens() != null ? dto.getItens() : Collections.emptyList();
 
             List<ItemVenda> itens = itensDto.stream().map(itemDto -> {
@@ -58,9 +113,8 @@ public class VendaService {
                                 () -> new RuntimeException("Livro não encontrado com id: " + itemDto.getLivroId()));
 
                 Estoque estoque = estoqueRepository.findByLivro(livro)
-                        .orElseThrow(
-                                () -> new RuntimeException(
-                                        "Estoque não encontrado para o livro: " + livro.getTitulo()));
+                        .orElseThrow(() -> new RuntimeException(
+                                "Estoque não encontrado para o livro: " + livro.getTitulo()));
 
                 if (estoque.getQuantidade() < itemDto.getQuantidade()) {
                     throw new RuntimeException("Estoque insuficiente para o livro: " + livro.getTitulo());
@@ -72,11 +126,18 @@ public class VendaService {
                 ItemVenda item = new ItemVenda();
                 item.setLivro(livro);
                 item.setQuantidade(itemDto.getQuantidade());
-                item.setVenda(vendaSalva);
-                item.setPrecoUnitario(livro.getPreco());
+                item.setVenda(venda);
                 return item;
             }).collect(Collectors.toList());
 
+            BigDecimal total = itens.stream()
+                    .map(item -> item.getLivro().getPreco().multiply(BigDecimal.valueOf(item.getQuantidade())))
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            venda.setPrecoTotal(total);
+            Venda vendaSalva = vendaRepository.save(venda);
+
+            itens.forEach(item -> item.setVenda(vendaSalva));
             itemVendaRepository.saveAll(itens);
 
             dto.setId(vendaSalva.getId());
@@ -86,7 +147,6 @@ public class VendaService {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Please Try Again");
         }
-
     }
 
     public List<VendaDTO> getAll() {
@@ -123,8 +183,8 @@ public class VendaService {
 
     }
 
-    
-    // Será que deveria ter como apagar uma venda? acho perigoso, a policia federal vai vir atrás
+    // Será que deveria ter como apagar uma venda? acho perigoso, a policia federal
+    // vai vir atrás
 
     public void delete(Long id) {
         try {

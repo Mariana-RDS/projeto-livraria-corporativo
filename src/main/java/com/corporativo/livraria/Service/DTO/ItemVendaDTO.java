@@ -9,5 +9,5 @@ public class ItemVendaDTO {
     private Long id;
     private Long livroId;
     private Integer quantidade;
-    private BigDecimal precoUnitario;
+    //private BigDecimal precoUnitario;
 }

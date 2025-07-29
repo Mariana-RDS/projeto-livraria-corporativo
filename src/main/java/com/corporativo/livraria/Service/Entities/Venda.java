@@ -1,6 +1,8 @@
 package com.corporativo.livraria.Service.Entities;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -21,8 +23,13 @@ public class Venda {
     @Column(name = "cpfCliente")
     private String cpfCliente;
 
+    @Column(name = "preco_total", precision = 10, scale = 2)
+    private BigDecimal precoTotal;
+
     @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemVenda> itens;
+
+    
 
     public Long getId() {
         return id;
@@ -38,6 +45,14 @@ public class Venda {
 
     public void setData(LocalDate data) {
         this.data = data;
+    }
+
+    public BigDecimal getPrecoTotal() {
+        return precoTotal;
+    }
+
+    public void setPrecoTotal(BigDecimal precoTotal) {
+        this.precoTotal = precoTotal;
     }
 
     public String getNomeCliente() {

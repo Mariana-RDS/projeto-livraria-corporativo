@@ -27,8 +27,8 @@ public class ItemVenda {
     @Column(name = "quantidade")
     private Integer quantidade;
 
-    @Column(name = "preco_unitario", nullable = false, precision = 10, scale = 2)
-    private BigDecimal precoUnitario;
+    //@Column(name = "preco_unitario", nullable = false, precision = 10, scale = 2)
+    //private BigDecimal precoUnitario;
 
     @ManyToOne
     @JoinColumn(name = "venda_id")
