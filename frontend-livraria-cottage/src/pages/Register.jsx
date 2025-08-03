@@ -27,7 +27,7 @@ export default function Register() {
     }
 
     try {
-      await register(form.username, form.password);
+      await register(form.username, form.password, "USER");
       setSuccess("Cadastro realizado com sucesso! Redirecionando para login...");
       setTimeout(() => {
         navigate("/login");

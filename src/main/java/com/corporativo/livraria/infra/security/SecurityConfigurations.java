@@ -19,12 +19,19 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.corporativo.livraria.Repositories.UsuarioRepository;
+import com.corporativo.livraria.Service.Entities.UserRole;
+import com.corporativo.livraria.Service.Entities.Usuario;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurations {
 
     @Autowired
     SecurityFilter securityFilter;
+
+    @Autowired
+    UsuarioRepository usuarioRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -63,5 +70,14 @@ public class SecurityConfigurations {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+
+    @Bean
+    public Usuario createAdminUser(){
+
+        String encryptedPassword = new BCryptPasswordEncoder().encode("mariana");
+         Usuario newUser = new Usuario("admin", encryptedPassword, UserRole.ADMIN);
+
+        return this.usuarioRepository.save(newUser);
     }
 }
