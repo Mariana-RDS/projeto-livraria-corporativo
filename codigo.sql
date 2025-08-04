@@ -6,7 +6,7 @@
 CREATE TABLE editora (
     id SERIAL PRIMARY KEY,
     nome_editora VARCHAR(128) NOT NULL
-);
+)
 
 -- Tabela Autor
 CREATE TABLE autor (
