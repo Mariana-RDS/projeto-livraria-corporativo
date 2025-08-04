@@ -1,24 +1,24 @@
 package com.corporativo.livraria.Controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.corporativo.livraria.Repositories.UsuarioRepository;
 import com.corporativo.livraria.Service.DTO.AuthenticationDTO;
 import com.corporativo.livraria.Service.DTO.LoginResponseDTO;
-import com.corporativo.livraria.Service.DTO.RegisterDTO;
+import com.corporativo.livraria.Service.DTO.RegisterDTO; // Importação necessária
 import com.corporativo.livraria.Service.Entities.Usuario;
 import com.corporativo.livraria.infra.security.TokenService;
 
 import jakarta.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
@@ -31,14 +31,19 @@ public class AuthenticationController {
     @Autowired
     TokenService tokenService;
 
-    @Autowired UsuarioRepository usuarioRepository;
+    @Autowired 
+    UsuarioRepository usuarioRepository;
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO dto){
-        var usernamePassword = new UsernamePasswordAuthenticationToken(dto.login(), dto.password());
-        var auth = this.authenticationManager.authenticate(usernamePassword);
+        // 'var' foi substituído por 'UsernamePasswordAuthenticationToken'
+        UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(dto.login(), dto.password());
+        
+        // 'var' foi substituído por 'Authentication'
+        Authentication auth = this.authenticationManager.authenticate(usernamePassword);
 
-        var token = tokenService.generateToken((Usuario)auth.getPrincipal());
+        // 'var' foi substituído por 'String'
+        String token = tokenService.generateToken((Usuario)auth.getPrincipal());
         
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
@@ -53,8 +58,5 @@ public class AuthenticationController {
         this.usuarioRepository.save(newUser);
 
         return ResponseEntity.ok().build();
-
     }
-    
-    
 }

@@ -1,18 +1,17 @@
 package com.corporativo.livraria.Service;
 
-import com.corporativo.livraria.Repositories.EstoqueRepository;
-import com.corporativo.livraria.Repositories.LivroRepository;
-import com.corporativo.livraria.Service.DTO.EstoqueDTO;
-import com.corporativo.livraria.Service.Entities.Estoque;
-import com.corporativo.livraria.Service.Entities.Livro;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import com.corporativo.livraria.Repositories.EstoqueRepository;
+import com.corporativo.livraria.Repositories.LivroRepository;
+import com.corporativo.livraria.Service.DTO.EstoqueDTO;
+import com.corporativo.livraria.Service.Entities.Estoque;
 
 @Service
 public class EstoqueService {
