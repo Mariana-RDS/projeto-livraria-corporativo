@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Home = () => {
-  // Adicionando ícones para cada seção
   const sections = [
     { 
       title: "Catálogo", 
@@ -62,7 +61,6 @@ const Home = () => {
               boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
               transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
             }}
-            // Efeito de "levantar" o card ao passar o mouse
             onMouseEnter={e => {
               e.currentTarget.style.transform = 'translateY(-5px)';
               e.currentTarget.style.boxShadow = '0 8px 15px rgba(0,0,0,0.1)';

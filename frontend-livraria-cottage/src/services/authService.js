@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {jwtDecode} from 'jwt-decode'
 
 const API_URL = 'http://localhost:8080/api/auth';
 
@@ -29,3 +30,13 @@ export const getToken = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     return user ? user.token : null;
 };
+
+export const isAdmin = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    console.log(user);
+    //Problema: token não é um jwt válido
+    //Servidor pode não estar gerando ou retornando um token válido
+}
+
+
+

@@ -4,18 +4,16 @@ import { getLivros } from "../services/livroService";
 
 export default function Vendas() {
   const [vendas, setVendas] = useState([]);
-  const [livros, setLivros] = useState([]); // Para popular o seletor de livros
+  const [livros, setLivros] = useState([]);
   const [erro, setErro] = useState("");
   
-  // Estado para a nova venda, agora mais complexo
   const [novaVenda, setNovaVenda] = useState({
     cpfCliente: "",
     nomeCliente: "",
-    data: new Date().toISOString().split('T')[0], // Data atual por defeito
-    itens: [], // Carrinho de compras
+    data: new Date().toISOString().split('T')[0],
+    itens: [],
   });
   
-  // Estado para o item a ser adicionado ao carrinho
   const [itemAtual, setItemAtual] = useState({ livroId: "", quantidade: 1 });
 
   useEffect(() => {
@@ -51,7 +49,7 @@ export default function Vendas() {
         ...prevVenda,
         itens: [...prevVenda.itens, { ...itemAtual, livroId: parseInt(itemAtual.livroId) }]
     }));
-    setItemAtual({ livroId: "", quantidade: 1 }); // Reseta o formulário do item
+    setItemAtual({ livroId: "", quantidade: 1 });
   };
   
   async function handleCreateVenda(e) {
@@ -63,7 +61,7 @@ export default function Vendas() {
     setErro("");
     try {
       await createVenda(novaVenda);
-      setNovaVenda({ cpfCliente: "", nomeCliente: "", data: new Date().toISOString().split('T')[0], itens: [] }); // Limpa tudo
+      setNovaVenda({ cpfCliente: "", nomeCliente: "", data: new Date().toISOString().split('T')[0], itens: [] });
       fetchVendas();
     } catch (err) {
       setErro("Erro ao registar venda: " + (err.response?.data?.message || "Verifique o estoque."));

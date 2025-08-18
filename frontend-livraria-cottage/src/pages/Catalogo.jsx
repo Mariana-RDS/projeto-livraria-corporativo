@@ -5,13 +5,12 @@ export default function Catalogo() {
   const [livros, setLivros] = useState([]);
   const [erro, setErro] = useState("");
   
-  // Estado inicial que corresponde ao LivroDTO do backend
   const initialState = {
     titulo: "",
     isbn: "",
     preco: "",
     nomeEditora: "",
-    nomesAutores: "", // Usaremos uma string separada por vírgulas
+    nomesAutores: "", 
     quantidadeEstoque: 0,
   };
 
@@ -24,7 +23,7 @@ export default function Catalogo() {
   async function fetchLivros() {
     try {
       const response = await getLivros();
-      // O backend retorna um objeto, mas precisamos de um array para o map
+
       setLivros(Array.isArray(response.data) ? response.data : []);
     } catch {
       setErro("Erro ao carregar livros.");
@@ -40,18 +39,16 @@ export default function Catalogo() {
     e.preventDefault();
     setErro("");
     try {
-      // Prepara o DTO para ser enviado, convertendo os tipos de dados
       const livroParaEnviar = {
         ...novoLivro,
         preco: parseFloat(novoLivro.preco),
         quantidadeEstoque: parseInt(novoLivro.quantidadeEstoque, 10),
-        // Converte a string de autores "Autor 1, Autor 2" para um array ["Autor 1", "Autor 2"]
         nomesAutores: novoLivro.nomesAutores.split(',').map(autor => autor.trim()),
       };
 
       await createLivro(livroParaEnviar);
-      setNovoLivro(initialState); // Limpa o formulário
-      fetchLivros(); // Atualiza a lista
+      setNovoLivro(initialState);
+      fetchLivros();
     } catch (err) {
       setErro("Erro ao criar livro. " + (err.response?.data?.message || ""));
     }

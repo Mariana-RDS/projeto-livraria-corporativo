@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { login } from "../services/authService";
+import { isAdmin, login } from "../services/authService";
 import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
@@ -16,6 +16,7 @@ export default function Login() {
     setError(null);
     try {
       await login(form.username, form.password);
+      isAdmin();
       navigate("/");
     } catch {
       setError("Usuário ou senha inválidos.");

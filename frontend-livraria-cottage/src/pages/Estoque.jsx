@@ -5,14 +5,13 @@ export default function Estoque() {
   const [estoques, setEstoques] = useState([]);
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
-  const [editando, setEditando] = useState({}); // Guarda a quantidade a ser editada -> { livroId: novaQuantidade }
+  const [editando, setEditando] = useState({});
 
   useEffect(() => {
     fetchEstoques();
   }, []);
 
   async function fetchEstoques() {
-    // Limpa mensagens antes de carregar
     setErro("");
     setSucesso("");
     try {
@@ -31,7 +30,6 @@ export default function Estoque() {
   const handleUpdate = async (livroId) => {
     const novaQuantidade = editando[livroId];
 
-    // Validação para garantir que a quantidade é um número válido
     if (novaQuantidade === "" || novaQuantidade < 0 || novaQuantidade === undefined) {
       setErro("Por favor, insira uma quantidade válida (número maior ou igual a zero).");
       return;
@@ -43,10 +41,9 @@ export default function Estoque() {
     try {
       await updateEstoque(livroId, novaQuantidade);
       setSucesso(`Estoque do livro ID ${livroId} atualizado com sucesso!`);
-      setEditando({}); // Limpa o estado de edição após o sucesso
-      fetchEstoques(); // Recarrega a lista para mostrar o valor atualizado
+      setEditando({});
+      fetchEstoques(); 
 
-      // Limpa a mensagem de sucesso após 3 segundos
       setTimeout(() => setSucesso(""), 3000);
     } catch (err) {
       setErro(`Erro ao atualizar estoque: ${err.response?.data?.message || "Tente novamente."}`);

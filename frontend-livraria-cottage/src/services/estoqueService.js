@@ -13,7 +13,6 @@ export const getEstoques = () => {
 };
 
 export const updateEstoque = (livroId, novaQuantidade) => {
-    // O backend espera a nova quantidade no corpo da requisição
     return axios.put(`${API_URL}/${livroId}`, novaQuantidade, { 
         headers: {
             ...getAuthHeaders(),
