@@ -65,7 +65,7 @@ public class VendaController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         try{
             vendaService.delete(id);
